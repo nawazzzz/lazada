@@ -68,16 +68,31 @@ Below are all methods available under this package. Parameters for all method ca
 
 You can use service container to make an api call
 ```php
-app('lazada')->auth()->authorizationUrl();
-app('lazada')->order()->get(order_id: '16090');
+app('lazada')->auth()->authorizationUrl(); // give URL to seller to authorize app
+app('lazada')->order()->get(order_id: '16090'); // get specific order
 ```
 
 or you can use facade
 
 ```php
 use Lazada;
+use Laraditz\Lazada\Exceptions\LazadaAPIError;
 
-Lazada::auth()->accessToken(code: '0_123456_XxxXXXXxxXXxxXXXXxxxxxxXXXXxx'); // get the code after seller has authorized the app
+try {
+    // Generate access token. Get the code after seller has authorized the app.
+    $accessToken = Lazada::auth()->accessToken(code: '0_123456_XxxXXXXxxXXxxXXXXxxxxxxXXXXxx');   
+} catch (LazadaAPIError $e) {
+    // Catch API Error
+    // $e->getMessage()
+    // $e->getMessageCode()
+    // $e->getRequestId()
+    // $e->getResult() // raw response
+    throw $e;
+} catch (\Throwable $th) {
+    throw $th;
+}
+
+// Get order list
 Lazada::order()->list(created_after: '2023-11-17T00:00:00+08:00');
 ```
 
