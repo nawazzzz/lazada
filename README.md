@@ -6,6 +6,10 @@
 
 Laravel package for interacting with Lazada API.
 
+## Requirements
+- PHP 8.1 and above.
+- Laravel 9 and above.
+
 ## Installation
 
 You can install the package via composer:
@@ -33,8 +37,9 @@ Run the migration command to create the necessary database table.
 php artisan migrate
 ```
 
-On Lazada Open Platform, configure this ***App Callback URL*** on your App Management section. Once seller has authorized the app, it will redirect to this URL. Under the hood, it will call API to generate access token so that you do not have to call it manually. If you want to use your own ***App Callback URL***, you may specify `LAZADA_APP_CALLBACK_URL` in your `.env`, but you need to manually call the `accessToken()` API to update the access token in your record.
+On Lazada Open Platform, configure this **App Callback URL** on your App Management section. Once seller has authorized the app, it will redirect to this URL. Under the hood, it will call API to generate access token so that you do not have to call it manually. If you want to use your own **App Callback URL**, you may specify `LAZADA_APP_CALLBACK_URL` in your `.env`, but you need to manually call the `accessToken()` API to update the access token in your record.
 ```
+// App Callback URL
 https://yourappurl.com/lazada/seller/authorized
 ```
 
@@ -61,7 +66,7 @@ Below are all methods available under this package. Parameters for all method ca
 
 ## Usage
 
-You can you service container to make an api call
+You can use service container to make an api call
 ```php
 app('lazada')->auth()->authorizationUrl();
 app('lazada')->order()->get(order_id: '16090');
