@@ -1,3 +1,5 @@
+![Laravel Wallet](./Banner.png)
+
 # Laravel Lazada
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laraditz/lazada.svg?style=flat-square)](https://packagist.org/packages/laraditz/lazada)
@@ -40,7 +42,7 @@ php artisan migrate
 On Lazada Open Platform, configure this **App Callback URL** on your App Management section. Once seller has authorized the app, it will redirect to this URL. Under the hood, it will call API to generate access token so that you do not have to call it manually. If you want to use your own **App Callback URL**, you may specify `LAZADA_APP_CALLBACK_URL` in your `.env`, but you need to manually call the `accessToken()` API to update the access token in your record.
 ```
 // App Callback URL
-https://yourappurl.com/lazada/seller/authorized
+https://your-app-url.com/lazada/seller/authorized
 ```
 
 ## Available Methods
@@ -94,6 +96,24 @@ try {
 
 // Get order list
 Lazada::order()->list(created_after: '2023-11-17T00:00:00+08:00');
+```
+
+## Event
+
+This package also provide an event to allow your application to listen for Lazada web push. You can create your listener and register it under event below.
+
+| Event                                     |  Description  
+|-------------------------------------------|-----------------------|
+| Laraditz\Lazada\Events\WebPushReceived    | Receive a push content from Lazada. 
+
+Read more about Lazada Push Mechanism (LPM) [here](https://open.lazada.com/apps/doc/doc?nodeId=29526&docId=120168).
+
+## Webhook URL
+
+You may setup the Callback URL below on Lazada Open API dashboard, under the Push Mecahnism section so that Lazada will push all content update to this url and trigger the `WebPushReceived` event above.
+
+```
+https://your-app-url.com/lazada/webhooks
 ```
 
 ### Testing
