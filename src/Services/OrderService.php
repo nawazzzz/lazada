@@ -27,4 +27,18 @@ class OrderService extends BaseService
             }
         }
     }
+
+    public function afterGetRequest(LazadaMessage $request, array $result = []): void
+    {
+        $data = data_get($result, 'data');
+        $order_id = data_get($data, 'order_id');
+
+        if ($order_id) {
+            LazadaOrder::updateOrCreate([
+                'id' => $order_id
+            ], [
+                'statuses' =>  data_get($data, 'statuses'),
+            ]);
+        }
+    }
 }
