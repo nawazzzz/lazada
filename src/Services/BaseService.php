@@ -139,7 +139,7 @@ class BaseService
         throw new LazadaAPIError(['code' => __('Error'), 'message' => __('API Server Error')]);
     }
 
-    private function afterRequest(LazadaMessage $request, array $result = [])
+    private function afterRequest(LazadaMessage $request, array $result = []): void
     {
         $methodName = 'after' . Str::studly($this->methodName) . 'Request';
 
@@ -165,14 +165,14 @@ class BaseService
         return $params;
     }
 
-    protected function getAllowedMethods()
+    protected function getAllowedMethods(): array
     {
         $route_prefix = str($this->serviceName)->remove('Service')->lower()->value;
 
         return array_keys(config('lazada.routes.' . $route_prefix) ?? []);
     }
 
-    protected function getUrl()
+    protected function getUrl(): string
     {
         $region = $this->lazada->getRegion();
 

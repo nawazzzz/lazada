@@ -1,3 +1,5 @@
+![Laravel Wallet](./Banner.png)
+
 # Laravel Lazada
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laraditz/lazada.svg?style=flat-square)](https://packagist.org/packages/laraditz/lazada)
@@ -5,6 +7,10 @@
 ![GitHub Actions](https://github.com/laraditz/lazada/actions/workflows/main.yml/badge.svg)
 
 Laravel package for interacting with Lazada API.
+
+## Requirements
+- PHP 8.1 and above.
+- Laravel 9 and above.
 
 ## Installation
 
@@ -33,9 +39,10 @@ Run the migration command to create the necessary database table.
 php artisan migrate
 ```
 
-On Lazada Open Platform, configure this ***App Callback URL*** on your App Management section. Once seller has authorized the app, it will redirect to this URL. Under the hood, it will call API to generate access token so that you do not have to call it manually. If you want to use your own ***App Callback URL***, you may specify `LAZADA_APP_CALLBACK_URL` in your `.env`, but you need to manually call the `accessToken()` API to update the access token in your record.
+On Lazada Open Platform, configure this **App Callback URL** on your App Management section. Once seller has authorized the app, it will redirect to this URL. Under the hood, it will call API to generate access token so that you do not have to call it manually. If you want to use your own **App Callback URL**, you may specify `LAZADA_APP_CALLBACK_URL` in your `.env`, but you need to manually call the `accessToken()` API to update the access token in your record.
 ```
-https://yourappurl.com/lazada/seller/authorized
+// App Callback URL
+https://your-app-url.com/lazada/seller/authorized
 ```
 
 ## Available Methods
@@ -61,19 +68,52 @@ Below are all methods available under this package. Parameters for all method ca
 
 ## Usage
 
-You can you service container to make an api call
+You can use service container to make an api call
 ```php
-app('lazada')->auth()->authorizationUrl();
-app('lazada')->order()->get(order_id: '16090');
+app('lazada')->auth()->authorizationUrl(); // give URL to seller to authorize app
+app('lazada')->order()->get(order_id: '16090'); // get specific order
 ```
 
 or you can use facade
 
 ```php
 use Lazada;
+use Laraditz\Lazada\Exceptions\LazadaAPIError;
 
-Lazada::auth()->accessToken(code: '0_123456_XxxXXXXxxXXxxXXXXxxxxxxXXXXxx'); // get the code after seller has authorized the app
+try {
+    // Generate access token. Get the code after seller has authorized the app.
+    $accessToken = Lazada::auth()->accessToken(code: '0_123456_XxxXXXXxxXXxxXXXXxxxxxxXXXXxx');   
+} catch (LazadaAPIError $e) {
+    // Catch API Error
+    // $e->getMessage()
+    // $e->getMessageCode()
+    // $e->getRequestId()
+    // $e->getResult() // raw response
+    throw $e;
+} catch (\Throwable $th) {
+    throw $th;
+}
+
+// Get order list
 Lazada::order()->list(created_after: '2023-11-17T00:00:00+08:00');
+```
+
+## Event
+
+This package also provide an event to allow your application to listen for Lazada web push. You can create your listener and register it under event below.
+
+| Event                                     |  Description  
+|-------------------------------------------|-----------------------|
+| Laraditz\Lazada\Events\WebPushReceived    | Receive a push content from Lazada. 
+
+Read more about Lazada Push Mechanism (LPM) [here](https://open.lazada.com/apps/doc/doc?nodeId=29526&docId=120168).
+
+## Webhook URL
+
+You may setup the Callback URL below on Lazada Open API dashboard, under the Push Mecahnism section so that Lazada will push all content update to this url and trigger the `WebPushReceived` event above.
+
+```
+https://your-app-url.com/lazada/webhooks
 ```
 
 ### Testing
