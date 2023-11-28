@@ -2,7 +2,29 @@
 
 namespace Laraditz\Lazada\Services;
 
+use Laraditz\Lazada\Models\LazadaMessage;
+use Laraditz\Lazada\Models\LazadaOrder;
+
 class OrderService extends BaseService
 {
-    // your code here
+    public function afterListRequest(LazadaMessage $request, array $result = []): void
+    {
+        $orders = data_get($result, 'data.orders');
+
+        if ($orders && count($orders) > 0) {
+
+            foreach ($orders as $order) {
+
+                $order_id = data_get($order, 'order_id');
+
+                if ($order_id) {
+                    LazadaOrder::updateOrCreate([
+                        'id' => $order_id
+                    ], [
+                        'statuses' =>  data_get($order, 'statuses'),
+                    ]);
+                }
+            }
+        }
+    }
 }

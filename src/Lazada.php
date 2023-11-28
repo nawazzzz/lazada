@@ -77,6 +77,18 @@ class Lazada
         return strtoupper($signature);
     }
 
+    public function getWebPushSignature(string $body): string
+    {
+        $app_key = $this->getAppKey();
+        $app_secret = $this->getAppSecret();
+        $sign_method = $this->getSignMethod();
+        $base = $app_key . $body;
+
+        $signature = hash_hmac($sign_method, $base, $app_secret);
+
+        return strtoupper($signature);
+    }
+
     public function getRegion(): string
     {
         return $this->region;
