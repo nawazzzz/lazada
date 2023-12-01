@@ -12,3 +12,8 @@ All notable changes to `laraditz/lazada` will be documented in this file
 - Add `Seller` and `Webhook` controllers.
 - Add `LazadaAccessToken`, `LazadaMessage`, `LazadaOrder`, `LazadaReverseOrder`, `LazadaSeller` model and corresponding tables.
 - Add `ActiveStatus`, `Affirmative` and `WebPushType` enums.
+
+## 1.0.1 - 2023-12-01
+
+### Added
+- Add `lazada:refresh-token` and `lazada:flush-expired-token` commands.
