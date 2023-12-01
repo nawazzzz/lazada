@@ -115,6 +115,22 @@ You may setup the Callback URL below on Lazada Open API dashboard, under the Pus
 ```
 https://your-app-url.com/lazada/webhooks
 ```
+## Commands
+
+```bash
+lazada:flush-expired-token    Flush expired access token.
+lazada:refresh-token          Refresh existing access token before it expired.
+```
+As Lazada access token has an expired date, you may want to set `lazada:refresh-token` on scheduler and run it before it expires to refresh the access token. Otherwise, you need the seller to reauthorize and generate a new access token.
+
+#### Token Duration
+Live
+- Access token: 30 days
+- Refresh token: 180 days
+
+Testing
+- Access token: 7 days
+- Refresh token: 30 days
 
 ### Testing
 
