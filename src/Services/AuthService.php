@@ -4,6 +4,7 @@ namespace Laraditz\Lazada\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Laraditz\Lazada\Models\LazadaAccessToken;
 use Laraditz\Lazada\Models\LazadaMessage;
 use Laraditz\Lazada\Models\LazadaSeller;
 
@@ -75,6 +76,39 @@ class AuthService extends BaseService
                 \Lazada::seller()->get();
             } catch (\Throwable $th) {
                 // throw $th;
+            }
+        }
+    }
+
+    public function afterRefreshTokenRequest(LazadaMessage $request, array $result = []): void
+    {
+        $user_info = data_get($result, 'country_user_info_list.0');
+        $seller_id = data_get($user_info, 'seller_id');
+        $access_token = data_get($result, 'access_token');
+        $refresh_token = data_get($result, 'refresh_token');
+
+        if ($seller_id && $access_token && $refresh_token) {
+
+            $seller = LazadaSeller::findOrFail($seller_id);
+
+            $commonData = [
+                'access_token' => $access_token,
+                'refresh_token' => $refresh_token,
+                'expires_at' => now()->addSeconds(data_get($result, 'expires_in')),
+                'refresh_expires_at' => now()->addSeconds(data_get($result, 'refresh_expires_in')),
+            ];
+
+            if ($seller->accessToken) {
+                $seller->accessToken->update($commonData);
+            } else {
+                $seller->accessToken()->create([
+                    ...$commonData,
+                    'user_info' => $user_info,
+                    'country_code' => data_get($result, 'country') ? strtoupper(data_get($result, 'country')) : null,
+                    'account_id' => data_get($result, 'account_id'),
+                    'account' => data_get($result, 'account'),
+                    'account_platform' => data_get($result, 'account_platform'),
+                ]);
             }
         }
     }
