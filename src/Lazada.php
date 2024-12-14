@@ -9,7 +9,7 @@ use LogicException;
 
 class Lazada
 {
-    private $services = ['auth', 'seller', 'order', 'helper'];
+    private $services = ['auth', 'seller', 'order', 'helper', 'finance'];
 
     public function __construct(
         private string $region,
