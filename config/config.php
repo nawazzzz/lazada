@@ -44,6 +44,10 @@ return [
             'logistics_fee_detail' => '/lbs/slb/queryLogisticsFeeDetail',
             'transaction_detail' => '/finance/transaction/details/get',
         ],
+        'product' => [
+            'get' => '/products/get',
+            'item' => '/product/item/get',
+        ],
     ],
     'middleware' => ['api'],
 ];
